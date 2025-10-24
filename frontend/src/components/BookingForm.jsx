@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { API_BASE } from "../lib/api";
 
 /** Utilidades */
 const years = (() => {
@@ -86,7 +87,7 @@ export default function BookingForm() {
         marketing_opt_in: form.marketing_opt_in
       };
 
-      const res = await fetch('/api/leads', {
+      const res = await fetch(`${API_BASE}/api/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

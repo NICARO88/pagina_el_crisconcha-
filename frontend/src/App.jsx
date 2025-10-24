@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar.jsx";
 import BookingForm from "./components/BookingForm.jsx";
 import Gallery from "./components/Gallery.jsx";
 import NextEvents from "./components/NextEvents.jsx";
+import { API_BASE } from "./lib/api";
 
 
 export default function App() {
@@ -13,7 +14,7 @@ export default function App() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/events');
+        const res = await fetch(`${API_BASE}/api/events`);
         const data = await res.json();
         setEvents(Array.isArray(data) ? data : []);
       } catch (e) {
