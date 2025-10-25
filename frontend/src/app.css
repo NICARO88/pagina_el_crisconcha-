@@ -372,3 +372,48 @@ select.form-select {
   appearance: none;
   background-image: none; /* sin caret nativo; opcional */
 }
+
+/* ===== Footer responsive tidy ===== */
+
+/* Desktop/tablet: permite “wrap” si el ancho aprieta */
+.footer-llama .container{
+  flex-wrap: wrap;                 /* evita desbordes */
+}
+
+/* Móvil: apila y centra todo ordenadito */
+@media (max-width: 576px){
+  .footer-llama .container{
+    flex-direction: column;        /* ya lo tienes por clase, refuerzo */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 8px;                      /* un poco menos de separación */
+  }
+
+  /* Orden: 1) marca 2) copyright 3) crédito dev */
+  .footer-llama .container > div{ order: 1; }             /* bloque “CRIS CONCHA” */
+  .footer-llama .container > small{ order: 2; }           /* copyright */
+  .footer-llama .container > .dev-credit{ order: 3; }     /* “Site by …” */
+
+  /* Tono y tamaños en móvil */
+  .footer-llama .container > small{
+    font-size: .9rem;
+    opacity: .9;
+  }
+  .footer-llama .container > .dev-credit{
+    margin: 0;                   /* quita márgenes que empujen */
+    font-size: .85rem;
+    opacity: .85;
+  }
+}
+
+/* Desktop: alínea prolijo y empuja el crédito a la derecha si hay espacio */
+@media (min-width: 768px){
+  .footer-llama .container{
+    gap: 12px;
+  }
+  .footer-llama .container > .dev-credit{
+    margin-left: auto;           /* se va al extremo derecho */
+  }
+}
+
