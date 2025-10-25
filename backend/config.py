@@ -10,6 +10,7 @@ class Settings:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
     FRONT_ORIGIN = os.getenv("FRONT_ORIGIN", "http://localhost:5173")
+    FRONT_ORIGINS = [o.strip() for o in FRONT_ORIGIN.split(",") if o.strip()]
 
     # SMTP para enviar correo (ajústalo a tu proveedor)
     SMTP_HOST = os.getenv("SMTP_HOST", "")

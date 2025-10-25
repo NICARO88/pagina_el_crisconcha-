@@ -45,7 +45,7 @@ else:
     Talisman(app, content_security_policy=csp, force_https=True)
 
 # CORS (en prod, limita a tu dominio)
-CORS(app, resources={r"/api/*": {"origins": settings.FRONT_ORIGIN}})
+CORS(app, resources={r"/api/*": {"origins": settings.FRONT_ORIGINS}})
 
 
 # CSRF para formularios Flask (no afecta tus JSON API por defecto)
