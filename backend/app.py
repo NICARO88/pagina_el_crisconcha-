@@ -18,6 +18,9 @@ import bcrypt
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email
+from threading import Thread
+import logging
+
 
 class AdminLoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -30,6 +33,13 @@ app = Flask(__name__)
 app.config.from_object(settings)
 
 app.config["SESSION_PERMANENT"] = False
+
+def _send_mail_bg(settings, data):
+    try:
+        send_new_lead(settings, data)
+    except Exception:
+        logging.exception("MAIL ERROR (background)")
+
 
 
 # Seguridad HTTP (ajusta Talisman para dev/prod)
@@ -45,7 +55,16 @@ else:
     Talisman(app, content_security_policy=csp, force_https=True)
 
 # CORS (en prod, limita a tu dominio)
-CORS(app, resources={r"/api/*": {"origins": settings.FRONT_ORIGIN}})
+CORS(
+  app,
+  resources={r"/api/*": {
+    "origins": settings.FRONT_ORIGIN,
+    "methods": ["GET", "POST", "OPTIONS"],
+    "allow_headers": ["Content-Type"],
+    "max_age": 86400  # cachea preflight
+  }},
+  supports_credentials=False  # no usamos cookies desde el front
+)
 
 
 # CSRF para formularios Flask (no afecta tus JSON API por defecto)
@@ -151,10 +170,7 @@ def api_leads():
     db.session.commit()
 
     # Enviar correo (no bloqueante sería mejor: cola/Thread)
-    try:
-        send_new_lead(settings, data)
-    except Exception as e:
-        print("[MAIL ERROR]", e)
+    Thread(target=_send_mail_bg, args=(settings, data)).start()
 
     return jsonify({"ok": True})
 

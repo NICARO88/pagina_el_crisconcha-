@@ -29,11 +29,14 @@ Acepta promos: {lead_data.get('marketing_opt_in')}
     msg.set_content(resumen)
 
     context = ssl.create_default_context()
-    with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+
+    # 👇 el timeout evita que se cuelgue el worker si no hay conexión
+    with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=20) as server:
+        server.ehlo()
         server.starttls(context=context)
+        server.ehlo()
         if settings.SMTP_USER:
             server.login(settings.SMTP_USER, settings.SMTP_PASS)
         server.send_message(msg)
 
     print("[MAIL OK] Enviado a", settings.MAIL_TO)
-
